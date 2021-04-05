@@ -138,7 +138,7 @@ async def addData():
     # Local Data settings
     #cosmosDB = os.getenv("CRICKETDATA_STRING")
     # Azure Data Settings
-    cosmosDB = os.environ["cricketdata"]
+    cosmosDB = os.environ["CUSTOMCONNSTR_cricketdata_cosmos_db"]
     client = pymongo.MongoClient(cosmosDB)
     db = client["playerdb"]
     col = db["playerinformation"]
