@@ -135,7 +135,10 @@ def scrap(x):
     
 async def addData():
     cricketData = []
-    cosmosDB = os.getenv("CRICKETDATA_STRING")
+    # Local Data settings
+    #cosmosDB = os.getenv("CRICKETDATA_STRING")
+    # Azure Data Settings
+    cosmosDB = os.environ["cricketdata"]
     client = pymongo.MongoClient(cosmosDB)
     db = client["playerdb"]
     col = db["playerinformation"]
