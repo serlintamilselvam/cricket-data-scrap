@@ -148,7 +148,7 @@ async def addData():
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=26)
     loop = asyncio.get_event_loop()
-    inputs = list(range(65, 65, 1))
+    inputs = list(range(65, 91, 1))
     futures = [loop.run_in_executor(executor, scrap, i) for i in inputs]
     results = await asyncio.gather(*futures)
     for (i, result) in zip(inputs, results):
