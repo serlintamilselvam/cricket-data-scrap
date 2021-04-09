@@ -18,6 +18,6 @@ async def main(mytimer: func.TimerRequest) -> None:
         logging.info('The timer is past due!')
 
     print("This function is executed successfully!")
-    #await addData()
+    await addData()
 
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
