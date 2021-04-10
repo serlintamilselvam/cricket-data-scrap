@@ -35,6 +35,12 @@ def mapData(dataDist, index, value):
         dataDist['ODI'] = value
     elif(index == 5):
         dataDist['T20'] = value
+    elif(index == 6):
+        dataDist['Full Name'] = value
+    elif(index == 7):
+        dataDist['Batting Style'] = value
+    elif(index == 8):
+        dataDist['Bowling Style'] = value
     return dataDist
 
 def textIsKey(dataDist, key, value):
@@ -88,6 +94,7 @@ def scrap(x):
                 cols = tr.find_all('td') #find all td tags(columns)
                 i = 0
                 dataDist = {}
+                isFullNameSet = 0
                 for td in cols:
                     if(td.text.strip() not in IGNORE_VALUES and td.text.strip().find('No. of Records') == -1):
                         textValue = td.text.strip()
@@ -105,6 +112,8 @@ def scrap(x):
                         dataTitle = 'ODI Records'
                     elif re.search(T20_URL, subUrl):
                         dataTitle = 'T20 Records'
+                    elif re.search(IPL_URL, subUrl):
+                        dataTitle = 'IPL Records'
                     elif re.search(TEST_URL, subUrl):
                         dataTitle = 'Test Records'
                         
@@ -118,6 +127,21 @@ def scrap(x):
                         print("Website Can't be reached")
                     else:
                         subSoup = soups(subPagehtml,"lxml") #parse the html
+                        
+                        # Set Full Name, Batting Style and Bowling Style
+                        if(isFullNameSet == 0):
+                            dataDist = mapData(dataDist, 6 ,subSoup.find('td', text='Full Name:').find_next('td').text.strip())
+                            dataDist = mapData(dataDist, 7 ,subSoup.find('td', text='Bats:').find_next('td').text.strip())
+                            dataDist = mapData(dataDist, 8 ,subSoup.find('td', text='Bowls:').find_next('td').text.strip())
+                            if(subSoup.find('a', text='IPL Profile & Statistics')):
+                                allLinks.append(subSoup.find('a', text='IPL Profile & Statistics'))
+                            isFullNameSet = 1
+                        
+                        if(dataTitle == 'IPL Records'):
+                            dataDist['IPL teams'] = subSoup.find('td', text='Teams:').find_next('td').text.strip().split(",")
+                            dataDist['IPL'] = re.sub(r"\([^()]*\)", "", subSoup.find('td', text='Matches:').find_next('td').text.strip())
+                            dataDist['IPL'] = dataDist['IPL'].replace("\u00A0", "")
+                        
                         subTables = subSoup.find('table', attrs={"width" : ["270"]})
                         content = subTables.find_all('td')
                         mainKey = []
