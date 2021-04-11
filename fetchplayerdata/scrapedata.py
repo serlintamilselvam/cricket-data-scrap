@@ -20,6 +20,7 @@ PLAYERLIST = 'PlayerList.asp?Group={}'
 ODI_URL = 'PlayerOverview_ODI.asp'
 T20_URL = 'PlayerOverview_T20.asp'
 TEST_URL = 'PlayerOverview.asp'
+IPL_URL = 'IPL/PlayerOverview.asp'
 IGNORE_VALUES = ['Name', 'Born', 'Detailed Profiles & Statistics', 'Country (Current)', 'Tests', 'T20s', 'ODIs']
 
 def mapData(dataDist, index, value):
