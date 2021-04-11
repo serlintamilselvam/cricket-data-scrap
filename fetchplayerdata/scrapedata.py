@@ -160,6 +160,7 @@ def scrap(x):
     
 async def addData():
     cricketData = []
+    
     # Local Data settings
     #cosmosDB = os.getenv("CRICKETDATA_STRING")
     # Azure Data Settings
