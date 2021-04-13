@@ -25,27 +25,29 @@ IGNORE_VALUES = ['Name', 'Born', 'Detailed Profiles & Statistics', 'Country (Cur
 
 def mapData(dataDist, index, value):
     if(index == 0):
-        dataDist['Name'] = value
+        dataDist['name'] = value
     elif(index == 1):
-        dataDist['Date Of Birth'] = value
+        dataDist['date_of_birth'] = value
     elif(index == 2):
-        dataDist['Country'] = value
+        dataDist['country'] = value
     elif(index == 3):
-        dataDist['Test'] = value
+        dataDist['test'] = value
     elif(index == 4):
-        dataDist['ODI'] = value
+        dataDist['odi'] = value
     elif(index == 5):
-        dataDist['T20'] = value
+        dataDist['t20'] = value
     elif(index == 6):
-        dataDist['Full Name'] = value
+        dataDist['full_name'] = value
     elif(index == 7):
-        dataDist['Batting Style'] = value
+        dataDist['batting_style'] = value
     elif(index == 8):
-        dataDist['Bowling Style'] = value
+        dataDist['bowling_style'] = value
     return dataDist
 
 def textIsKey(dataDist, key, value):
-    dataDist[key.replace(':', '')] = value
+    json_key_name = key.lower()
+    json_key_name = json_key_name.replace(':', '').replace(' ', '_')
+    dataDist[json_key_name] = value
     return dataDist
 
 def extractTdAndMapValues(dataDist, heading, tds):
@@ -55,7 +57,7 @@ def extractTdAndMapValues(dataDist, heading, tds):
     while(i < len(tds)):
         if(tds[i].text.strip() in heading):
             if(header != ''):
-                dataDist[header] = data
+                textIsKey(dataDist, header, data)
                 data = {}
             header = tds[i].text.strip()
             i+=1
@@ -64,7 +66,7 @@ def extractTdAndMapValues(dataDist, heading, tds):
             i+=2
         else:
             i+=1
-    dataDist[header] = data
+    textIsKey(dataDist, header, data)
     return dataDist
 
 
@@ -110,13 +112,13 @@ def scrap(x):
                     subDataDist = {}
                     subUrl = PRETEXT_URL+link.get('href')
                     if re.search(ODI_URL, subUrl):
-                        dataTitle = 'ODI Records'
+                        dataTitle = 'odi_records'
                     elif re.search(T20_URL, subUrl):
-                        dataTitle = 'T20 Records'
+                        dataTitle = 't20_records'
                     elif re.search(IPL_URL, subUrl):
-                        dataTitle = 'IPL Records'
+                        dataTitle = 'ipl_records'
                     elif re.search(TEST_URL, subUrl):
-                        dataTitle = 'Test Records'
+                        dataTitle = 'test_records'
                         
                     try:
                         #print("\n")
@@ -139,9 +141,9 @@ def scrap(x):
                             isFullNameSet = 1
                         
                         if(dataTitle == 'IPL Records'):
-                            dataDist['IPL teams'] = subSoup.find('td', text='Teams:').find_next('td').text.strip().split(",")
-                            dataDist['IPL'] = re.sub(r"\([^()]*\)", "", subSoup.find('td', text='Matches:').find_next('td').text.strip())
-                            dataDist['IPL'] = dataDist['IPL'].replace("\u00A0", "")
+                            dataDist['ipl_teams'] = subSoup.find('td', text='Teams:').find_next('td').text.strip().split(",")
+                            dataDist['ipl'] = re.sub(r"\([^()]*\)", "", subSoup.find('td', text='Matches:').find_next('td').text.strip())
+                            dataDist['ipl'] = dataDist['ipl'].replace("\u00A0", "")
                         
                         subTables = subSoup.find('table', attrs={"width" : ["270"]})
                         content = subTables.find_all('td')
