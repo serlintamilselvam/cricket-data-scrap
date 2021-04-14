@@ -22,6 +22,7 @@ T20_URL = 'PlayerOverview_T20.asp'
 TEST_URL = 'PlayerOverview.asp'
 IPL_URL = 'IPL/PlayerOverview.asp'
 IGNORE_VALUES = ['Name', 'Born', 'Detailed Profiles & Statistics', 'Country (Current)', 'Tests', 'T20s', 'ODIs']
+KEBAB_CASE = re.compile(r'(?<!^)(?=[A-Z])')
 
 def mapData(dataDist, index, value):
     if(index == 0):
@@ -45,8 +46,9 @@ def mapData(dataDist, index, value):
     return dataDist
 
 def textIsKey(dataDist, key, value):
-    json_key_name = key.lower()
-    json_key_name = json_key_name.replace(':', '').replace(' ', '_')
+    json_key_name = key.title()
+    json_key_name = KEBAB_CASE.sub('_', json_key_name).lower()
+    json_key_name = json_key_name.replace(':', '').replace(' ', '')
     dataDist[json_key_name] = value
     return dataDist
 
@@ -112,13 +114,13 @@ def scrap(x):
                     subDataDist = {}
                     subUrl = PRETEXT_URL+link.get('href')
                     if re.search(ODI_URL, subUrl):
-                        dataTitle = 'odi_records'
+                        dataTitle = 'odistats'
                     elif re.search(T20_URL, subUrl):
-                        dataTitle = 't20_records'
+                        dataTitle = 't20stats'
                     elif re.search(IPL_URL, subUrl):
-                        dataTitle = 'ipl_records'
+                        dataTitle = 'iplstats'
                     elif re.search(TEST_URL, subUrl):
-                        dataTitle = 'test_records'
+                        dataTitle = 'teststats'
                         
                     try:
                         #print("\n")
@@ -140,7 +142,7 @@ def scrap(x):
                                 allLinks.append(subSoup.find('a', text='IPL Profile & Statistics'))
                             isFullNameSet = 1
                         
-                        if(dataTitle == 'IPL Records'):
+                        if(dataTitle == 'iplstats'):
                             dataDist['ipl_teams'] = subSoup.find('td', text='Teams:').find_next('td').text.strip().split(",")
                             dataDist['ipl'] = re.sub(r"\([^()]*\)", "", subSoup.find('td', text='Matches:').find_next('td').text.strip())
                             dataDist['ipl'] = dataDist['ipl'].replace("\u00A0", "")
