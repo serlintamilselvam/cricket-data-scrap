@@ -7,6 +7,7 @@ import numpy as np
 import json
 import os
 import re
+import ast
 import pymongo
 from dotenv import load_dotenv
 load_dotenv()
@@ -49,7 +50,10 @@ def textIsKey(dataDist, key, value):
     json_key_name = key.title()
     json_key_name = KEBAB_CASE.sub('_', json_key_name).lower()
     json_key_name = json_key_name.replace(':', '').replace(' ', '')
-    dataDist[json_key_name] = value
+    try:
+        dataDist[json_key_name] = ast.literal_eval(value)
+    except Exception as e:
+        dataDist[json_key_name] = value
     return dataDist
 
 def extractTdAndMapValues(dataDist, heading, tds):
